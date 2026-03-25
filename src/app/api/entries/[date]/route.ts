@@ -13,7 +13,10 @@ export async function GET(
         Key: { date },
     }));
 
-    return NextResponse.json({ content: result.Item?.content ?? "" });
+    return NextResponse.json({
+        title: result.Item?.title ?? "",
+        content: result.Item?.content ?? "",
+    });
 }
 
 export async function POST(
@@ -21,11 +24,11 @@ export async function POST(
     { params }: { params: Promise<{ date: string }> }
 ) {
     const { date } = await params;
-    const { content } = await request.json();
+    const { title, content } = await request.json();
 
     await dynamo.send(new PutCommand({
         TableName: "journal_entries",
-        Item: { date, content },
+        Item: { date, title, content },
     }));
 
     return NextResponse.json({ success: true });
