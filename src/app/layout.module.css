@@ -3,22 +3,8 @@
   height: 100vh;
 }
 
-.sidebar {
-  width: 220px;
-  border-right: 1px solid #ddd;
-  padding: 1rem;
-}
-
-.sidebar ul {
-  list-style: none;
-}
-
-.sidebar li {
-  padding: 0.5rem 0;
-  cursor: pointer;
-}
-
 .main {
   flex: 1;
   padding: 1rem;
+  overflow-y: auto;
 }
