@@ -10,14 +10,17 @@ export default function EntryEditor({ date }: { date: string }) {
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        setLoading(true);
         async function loadEntry() {
             const res = await fetch(`/api/entries/${date}`);
             const data = await res.json();
             const entry = { title: data.title, content: data.content, images: data.images };
             setSaved(entry);
             setDraft(entry);
+            setLoading(false);
         }
         loadEntry();
     }, [date]);
@@ -46,7 +49,13 @@ export default function EntryEditor({ date }: { date: string }) {
         setUploading(false);
     }
 
-    function handleRemove(index: number) {
+    async function handleRemove(index: number) {
+        const url = draft.images[index];
+        await fetch(`/api/entries/${date}/images`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url }),
+        });
         setDraft((prev) => ({
             ...prev,
             images: prev.images.filter((_, i) => i !== index),
@@ -69,9 +78,17 @@ export default function EntryEditor({ date }: { date: string }) {
         setSaving(false);
     }
 
+    if (loading) {
+        return (
+            <div className={styles.spinnerWrap}>
+                <div className={styles.spinner} />
+            </div>
+        );
+    }
+
     if (!isEditing) {
         return (
-            <div className={styles.entry}>
+            <div className={styles.entry} key={date}>
                 <div className={styles.readHeader}>
                     <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
                     <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
@@ -83,7 +100,7 @@ export default function EntryEditor({ date }: { date: string }) {
     }
 
     return (
-        <div className={styles.entry}>
+        <div className={styles.entry} key={`${date}-edit`}>
             <input
                 className={styles.title}
                 value={draft.title}
