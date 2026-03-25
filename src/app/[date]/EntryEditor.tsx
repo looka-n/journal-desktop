@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import Carousel from "../components/Carousel";
 import ImageStrip from "../components/ImageStrip";
+import { useEntryContext } from "../context/EntryContext";
 
 export default function EntryEditor({ date }: { date: string }) {
     const [saved, setSaved] = useState({ title: "", content: "", images: [] as string[] });
@@ -63,6 +64,8 @@ export default function EntryEditor({ date }: { date: string }) {
         }));
     }
 
+    const { refreshSidebar } = useEntryContext();
+
     async function handleSave() {
         setSaving(true);
         try {
@@ -73,6 +76,7 @@ export default function EntryEditor({ date }: { date: string }) {
             });
             setSaved(draft);
             setIsEditing(false);
+            refreshSidebar();
         } catch (err) {
             console.error("Save error:", err);
         }

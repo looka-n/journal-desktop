@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "./components/Sidebar";
+import { EntryProvider } from "./context/EntryContext";
 import styles from "./layout.module.css";
 import "./globals.css";
 
@@ -18,10 +19,12 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${styles.shell} ${inter.className}`}>
-                <Sidebar />
-                <main className={styles.main}>
-                    {children}
-                </main>
+                <EntryProvider>
+                    <Sidebar />
+                    <main className={styles.main}>
+                        {children}
+                    </main>
+                </EntryProvider>
             </body>
         </html>
     );

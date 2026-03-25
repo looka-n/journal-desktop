@@ -1,5 +1,6 @@
 "use client";
 
+import { useEntryContext } from "../context/EntryContext";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import SidebarCard from "./SidebarCard";
@@ -46,6 +47,8 @@ export default function Sidebar() {
     const bottomRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
 
+    const { refreshTrigger } = useEntryContext();
+
     useEffect(() => {
         async function loadEntryMeta() {
             const res = await fetch("/api/entries");
@@ -57,7 +60,7 @@ export default function Sidebar() {
             setEntryMeta(meta);
         }
         loadEntryMeta();
-    }, []);
+    }, [refreshTrigger]);
 
     useEffect(() => {
         if (query) return;
