@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
+import SidebarCard from "./SidebarCard";
 import styles from "./Sidebar.module.css";
 
 const BATCH_SIZE = 60;
@@ -17,19 +17,28 @@ function generateDates(from: Date, count: number): string[] {
     return dates;
 }
 
+interface EntryMeta {
+    title: string;
+    cover: string | null;
+}
+
 export default function Sidebar() {
     const [dates, setDates] = useState<string[]>(() => generateDates(new Date(), BATCH_SIZE));
-    const [savedDates, setSavedDates] = useState<Set<string>>(new Set());
+    const [entryMeta, setEntryMeta] = useState<Record<string, EntryMeta>>({});
     const bottomRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
 
     useEffect(() => {
-        async function loadSavedDates() {
+        async function loadEntryMeta() {
             const res = await fetch("/api/entries");
             const data = await res.json();
-            setSavedDates(new Set(data.dates));
+            const meta: Record<string, EntryMeta> = {};
+            for (const entry of data.entries) {
+                meta[entry.date] = { title: entry.title, cover: entry.cover };
+            }
+            setEntryMeta(meta);
         }
-        loadSavedDates();
+        loadEntryMeta();
     }, []);
 
     useEffect(() => {
@@ -49,19 +58,15 @@ export default function Sidebar() {
 
     return (
         <aside className={styles.sidebar}>
-            <ul className={styles.list}>
-                {dates.map((date) => (
-                    <li key={date}>
-                        <Link
-                            href={`/${date}`}
-                            className={`${styles.item} ${pathname === `/${date}` ? styles.active : ""}`}
-                        >
-                            {date}
-                            {savedDates.has(date) && <span className={styles.dot} />}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
+            {dates.map((date) => (
+                <SidebarCard
+                    key={date}
+                    date={date}
+                    title={entryMeta[date]?.title ?? ""}
+                    cover={entryMeta[date]?.cover ?? null}
+                    active={pathname === `/${date}`}
+                />
+            ))}
             <div ref={bottomRef} />
         </aside>
     );
