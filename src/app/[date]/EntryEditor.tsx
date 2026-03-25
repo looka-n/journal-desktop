@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import Carousel from "../components/Carousel";
 import ImageStrip from "../components/ImageStrip";
 
 export default function EntryEditor({ date }: { date: string }) {
@@ -93,9 +94,11 @@ export default function EntryEditor({ date }: { date: string }) {
                     <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
                     <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
                 </div>
-                {saved.images.length > 0 && <ImageStrip images={saved.images} />}
-                <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
-            </div>
+                <div>
+                    {saved.images.length > 0 && <Carousel images={saved.images} />}
+                    <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
+                </div>
+            </div >
         );
     }
 
