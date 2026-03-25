@@ -5,6 +5,7 @@
 
 .main {
   flex: 1;
-  padding: 1rem;
+  padding: 2rem;
   overflow-y: auto;
+  background: var(--bg);
 }

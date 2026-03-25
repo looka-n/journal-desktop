@@ -1,2 +1,23 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: sans-serif; height: 100vh; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #1e1e1e;
+  --surface: #252525;
+  --border: #333;
+  --text-primary: #e8e8e8;
+  --text-secondary: #888;
+  --text-muted: #555;
+  --accent: #e8e8e8;
+  --accent-text: #1e1e1e;
+}
+
+body {
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text-primary);
+  height: 100vh;
+}
