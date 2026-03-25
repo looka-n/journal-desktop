@@ -17,6 +17,23 @@ function generateDates(from: Date, count: number): string[] {
     return dates;
 }
 
+function generateFilteredDates(query: string): string[] {
+    const results: string[] = [];
+    const cursor = new Date();
+    // search back 10 years
+    for (let i = 0; i < 365 * 10; i++) {
+        const dateStr = cursor.toISOString().split("T")[0];
+        const friendly = cursor.toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric", year: "numeric"
+        }).toLowerCase();
+        if (dateStr.includes(query) || friendly.includes(query.toLowerCase())) {
+            results.push(dateStr);
+        }
+        cursor.setDate(cursor.getDate() - 1);
+    }
+    return results;
+}
+
 interface EntryMeta {
     title: string;
     cover: string | null;
@@ -25,6 +42,7 @@ interface EntryMeta {
 export default function Sidebar() {
     const [dates, setDates] = useState<string[]>(() => generateDates(new Date(), BATCH_SIZE));
     const [entryMeta, setEntryMeta] = useState<Record<string, EntryMeta>>({});
+    const [query, setQuery] = useState("");
     const bottomRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
 
@@ -42,6 +60,7 @@ export default function Sidebar() {
     }, []);
 
     useEffect(() => {
+        if (query) return;
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 setDates((prev) => {
@@ -51,14 +70,36 @@ export default function Sidebar() {
                 });
             }
         });
-
         if (bottomRef.current) observer.observe(bottomRef.current);
         return () => observer.disconnect();
-    }, []);
+    }, [query]);
+
+    const filteredDates = query
+        ? generateFilteredDates(query).filter((date) => {
+            const title = entryMeta[date]?.title?.toLowerCase() ?? "";
+            return title.includes(query.toLowerCase()) ||
+                date.includes(query) ||
+                new Date(date + "T00:00:00").toLocaleDateString("en-US", {
+                    weekday: "long", month: "long", day: "numeric", year: "numeric"
+                }).toLowerCase().includes(query.toLowerCase());
+        })
+        : dates;
 
     return (
         <aside className={styles.sidebar}>
-            {dates.map((date) => (
+            <div className={styles.searchWrap}>
+                <input
+                    className={styles.search}
+                    type="text"
+                    placeholder="Search entries..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+                {query && (
+                    <button className={styles.clear} onClick={() => setQuery("")}>×</button>
+                )}
+            </div>
+            {filteredDates.map((date) => (
                 <SidebarCard
                     key={date}
                     date={date}
@@ -67,7 +108,7 @@ export default function Sidebar() {
                     active={pathname === `/${date}`}
                 />
             ))}
-            <div ref={bottomRef} />
+            {!query && <div ref={bottomRef} />}
         </aside>
     );
 }
