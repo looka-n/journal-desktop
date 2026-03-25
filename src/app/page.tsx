@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+
 export default function Home() {
-    return <p>Select a day to begin.</p>;
+    const today = new Date().toISOString().split("T")[0];
+    redirect(`/${today}`);
 }
