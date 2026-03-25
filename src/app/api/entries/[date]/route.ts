@@ -16,6 +16,7 @@ export async function GET(
     return NextResponse.json({
         title: result.Item?.title ?? "",
         content: result.Item?.content ?? "",
+        images: result.Item?.images ?? [],
     });
 }
 
@@ -24,12 +25,10 @@ export async function POST(
     { params }: { params: Promise<{ date: string }> }
 ) {
     const { date } = await params;
-    const { title, content } = await request.json();
-
+    const { title, content, images } = await request.json();
     await dynamo.send(new PutCommand({
         TableName: "journal_entries",
-        Item: { date, title, content },
+        Item: { date, title, content, images: images ?? [] },
     }));
-
     return NextResponse.json({ success: true });
 }

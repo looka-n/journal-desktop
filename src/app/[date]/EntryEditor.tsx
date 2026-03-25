@@ -2,21 +2,56 @@
 
 import { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import ImageStrip from "../components/ImageStrip";
 
 export default function EntryEditor({ date }: { date: string }) {
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
+    const [saved, setSaved] = useState({ title: "", content: "", images: [] as string[] });
+    const [draft, setDraft] = useState({ title: "", content: "", images: [] as string[] });
+    const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         async function loadEntry() {
             const res = await fetch(`/api/entries/${date}`);
             const data = await res.json();
-            setTitle(data.title);
-            setContent(data.content);
+            const entry = { title: data.title, content: data.content, images: data.images };
+            setSaved(entry);
+            setDraft(entry);
         }
         loadEntry();
     }, [date]);
+
+    function handleEdit() {
+        setDraft(saved);
+        setIsEditing(true);
+    }
+
+    function handleCancel() {
+        setDraft(saved);
+        setIsEditing(false);
+    }
+
+    async function handleUpload(files: FileList) {
+        setUploading(true);
+        const formData = new FormData();
+        Array.from(files).forEach((file) => formData.append("images", file));
+
+        const res = await fetch(`/api/entries/${date}/images`, {
+            method: "POST",
+            body: formData,
+        });
+        const data = await res.json();
+        setDraft((prev) => ({ ...prev, images: [...prev.images, ...data.urls] }));
+        setUploading(false);
+    }
+
+    function handleRemove(index: number) {
+        setDraft((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
+    }
 
     async function handleSave() {
         setSaving(true);
@@ -24,31 +59,56 @@ export default function EntryEditor({ date }: { date: string }) {
             await fetch(`/api/entries/${date}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ title, content }),
+                body: JSON.stringify(draft),
             });
+            setSaved(draft);
+            setIsEditing(false);
         } catch (err) {
             console.error("Save error:", err);
         }
         setSaving(false);
     }
 
+    if (!isEditing) {
+        return (
+            <div className={styles.entry}>
+                <div className={styles.readHeader}>
+                    <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
+                    <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
+                </div>
+                {saved.images.length > 0 && <ImageStrip images={saved.images} />}
+                <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.entry}>
             <input
                 className={styles.title}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={draft.title}
+                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
                 placeholder="Title"
             />
+            <ImageStrip
+                images={draft.images}
+                isEditing
+                onUpload={handleUpload}
+                onRemove={handleRemove}
+            />
+            {uploading && <p className={styles.empty}>Uploading...</p>}
             <textarea
                 className={styles.editor}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
+                value={draft.content}
+                onChange={(e) => setDraft({ ...draft, content: e.target.value })}
                 placeholder="Write your entry..."
             />
-            <button className={styles.save} onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : "Save"}
-            </button>
+            <div className={styles.actions}>
+                <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
+                <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
+                    {saving ? "Saving..." : "Save"}
+                </button>
+            </div>
         </div>
     );
 }
