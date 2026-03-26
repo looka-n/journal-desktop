@@ -5,21 +5,24 @@ import styles from "./page.module.css";
 import Carousel from "../components/Carousel";
 import ImageStrip from "../components/ImageStrip";
 import { useEntryContext } from "../context/EntryContext";
+import { MediaItem, normalizeMedia, detectPlatform } from "@/lib/media";
 
 export default function EntryEditor({ date }: { date: string }) {
-    const [saved, setSaved] = useState({ title: "", content: "", images: [] as string[] });
-    const [draft, setDraft] = useState({ title: "", content: "", images: [] as string[] });
+    const [saved, setSaved] = useState({ title: "", content: "", media: [] as MediaItem[] });
+    const [draft, setDraft] = useState({ title: "", content: "", media: [] as MediaItem[] });
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const { refreshSidebar } = useEntryContext();
 
     useEffect(() => {
         setLoading(true);
         async function loadEntry() {
             const res = await fetch(`/api/entries/${date}`);
             const data = await res.json();
-            const entry = { title: data.title, content: data.content, images: data.images };
+            const media = normalizeMedia(data.images ?? []);
+            const entry = { title: data.title, content: data.content, media };
             setSaved(entry);
             setDraft(entry);
             setLoading(false);
@@ -47,24 +50,31 @@ export default function EntryEditor({ date }: { date: string }) {
             body: formData,
         });
         const data = await res.json();
-        setDraft((prev) => ({ ...prev, images: [...prev.images, ...data.urls] }));
+        const newItems: MediaItem[] = data.urls.map((url: string) => ({ type: "image" as const, url }));
+        setDraft((prev) => ({ ...prev, media: [...prev.media, ...newItems] }));
         setUploading(false);
     }
 
-    async function handleRemove(index: number) {
-        const url = draft.images[index];
-        await fetch(`/api/entries/${date}/images`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url }),
-        });
-        setDraft((prev) => ({
-            ...prev,
-            images: prev.images.filter((_, i) => i !== index),
-        }));
+    function handleAddEmbed(url: string) {
+        const platform = detectPlatform(url);
+        const item: MediaItem = { type: "embed", platform, url };
+        setDraft((prev) => ({ ...prev, media: [...prev.media, item] }));
     }
 
-    const { refreshSidebar } = useEntryContext();
+    async function handleRemove(index: number) {
+        const item = draft.media[index];
+        if (item.type === "image") {
+            await fetch(`/api/entries/${date}/images`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ url: item.url }),
+            });
+        }
+        setDraft((prev) => ({
+            ...prev,
+            media: prev.media.filter((_, i) => i !== index),
+        }));
+    }
 
     async function handleSave() {
         setSaving(true);
@@ -72,7 +82,7 @@ export default function EntryEditor({ date }: { date: string }) {
             await fetch(`/api/entries/${date}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(draft),
+                body: JSON.stringify({ title: draft.title, content: draft.content, images: draft.media }),
             });
             setSaved(draft);
             setIsEditing(false);
@@ -98,11 +108,11 @@ export default function EntryEditor({ date }: { date: string }) {
                     <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
                     <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
                 </div>
-                <div>
-                    {saved.images.length > 0 && <Carousel images={saved.images} />}
+                <div className={styles.inset}>
+                    {saved.media.length > 0 && <Carousel items={saved.media} />}
                     <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
                 </div>
-            </div >
+            </div>
         );
     }
 
@@ -115,10 +125,11 @@ export default function EntryEditor({ date }: { date: string }) {
                 placeholder="Title"
             />
             <ImageStrip
-                images={draft.images}
+                items={draft.media}
                 isEditing
                 onUpload={handleUpload}
                 onRemove={handleRemove}
+                onAddEmbed={handleAddEmbed}
             />
             {uploading && <p className={styles.empty}>Uploading...</p>}
             <textarea

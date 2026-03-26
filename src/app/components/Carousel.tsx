@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { MediaItem } from "@/lib/media";
+import EmbedSlide from "./EmbedSlide";
 import styles from "./Carousel.module.css";
 
 interface Props {
-    images: string[];
+    items: MediaItem[];
 }
 
 type Direction = "left" | "right" | null;
 
-export default function Carousel({ images }: Props) {
+export default function Carousel({ items }: Props) {
     const [current, setCurrent] = useState(0);
     const [prev_, setPrev] = useState<number | null>(null);
     const [direction, setDirection] = useState<Direction>(null);
@@ -30,12 +32,12 @@ export default function Carousel({ images }: Props) {
     }
 
     const prevSlide = useCallback(() => {
-        navigate((current - 1 + images.length) % images.length, "left");
-    }, [current, images.length, animating]);
+        navigate((current - 1 + items.length) % items.length, "left");
+    }, [current, items.length, animating]);
 
     const nextSlide = useCallback(() => {
-        navigate((current + 1) % images.length, "right");
-    }, [current, images.length, animating]);
+        navigate((current + 1) % items.length, "right");
+    }, [current, items.length, animating]);
 
     useEffect(() => {
         if (!lightbox) return;
@@ -48,34 +50,44 @@ export default function Carousel({ images }: Props) {
         return () => window.removeEventListener("keydown", handleKey);
     }, [lightbox, prevSlide, nextSlide]);
 
-    if (images.length === 0) return null;
+    if (!items || items.length === 0) return null;
+
+    const currentItem = items[current];
+    const prevItem = prev_ !== null ? items[prev_] : null;
+
+    function renderSlide(item: MediaItem, className: string, onClick?: () => void) {
+        if (item.type === "image") {
+            return (
+                <img
+                    src={item.url}
+                    alt="entry media"
+                    className={`${styles.image} ${className}`}
+                    onClick={onClick}
+                />
+            );
+        }
+        return (
+            <div className={`${styles.image} ${className}`}>
+                <EmbedSlide item={item} />
+            </div>
+        );
+    }
 
     return (
         <>
             <div className={styles.carousel}>
-                {/* outgoing image */}
-                {prev_ !== null && (
-                    <img
-                        src={images[prev_]}
-                        alt="outgoing"
-                        className={`${styles.image} ${direction === "right" ? styles.exitLeft : styles.exitRight}`}
-                    />
+                {prevItem && renderSlide(prevItem, direction === "right" ? styles.exitLeft : styles.exitRight)}
+                {renderSlide(
+                    currentItem,
+                    animating ? (direction === "right" ? styles.enterRight : styles.enterLeft) : styles.settled,
+                    currentItem.type === "image" && !animating ? () => setLightbox(true) : undefined
                 )}
-                {/* incoming image */}
-                <img
-                    key={current}
-                    src={images[current]}
-                    alt={`image ${current + 1}`}
-                    className={`${styles.image} ${animating ? (direction === "right" ? styles.enterRight : styles.enterLeft) : styles.settled}`}
-                    onClick={() => !animating && setLightbox(true)}
-                />
-
-                {images.length > 1 && (
+                {items.length > 1 && (
                     <>
                         <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={prevSlide}>‹</button>
                         <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={nextSlide}>›</button>
                         <div className={styles.dots}>
-                            {images.map((_, i) => (
+                            {items.map((_, i) => (
                                 <button
                                     key={i}
                                     className={`${styles.dot} ${i === current ? styles.dotActive : ""}`}
@@ -87,12 +99,12 @@ export default function Carousel({ images }: Props) {
                 )}
             </div>
 
-            {lightbox && (
+            {lightbox && currentItem.type === "image" && (
                 <div className={styles.lightboxOverlay} onClick={() => setLightbox(false)}>
                     <div className={styles.lightboxContent} onClick={(e) => e.stopPropagation()}>
-                        <img src={images[current]} alt={`image ${current + 1}`} className={styles.lightboxImage} />
+                        <img src={currentItem.url} alt="fullscreen" className={styles.lightboxImage} />
                         <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
-                        {images.length > 1 && (
+                        {items.length > 1 && (
                             <>
                                 <button className={`${styles.lightboxArrow} ${styles.lightboxLeft}`} onClick={prevSlide}>‹</button>
                                 <button className={`${styles.lightboxArrow} ${styles.lightboxRight}`} onClick={nextSlide}>›</button>
