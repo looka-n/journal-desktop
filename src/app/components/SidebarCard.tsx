@@ -1,4 +1,7 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEntryContext } from "../context/EntryContext";
 import styles from "./SidebarCard.module.css";
 
 interface Props {
@@ -15,15 +18,30 @@ function formatDate(dateStr: string) {
         month: date.toLocaleDateString("en-US", { month: "short" }).toUpperCase(),
         number: date.getDate().toString(),
         year: date.getFullYear().toString(),
-        display: date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
     };
 }
 
 export default function SidebarCard({ date, title, cover, active }: Props) {
     const { day, month, number, year } = formatDate(date);
+    const { isEditing, setIsEditing } = useEntryContext();
+    const router = useRouter();
+
+    function handleClick(e: React.MouseEvent) {
+        e.preventDefault();
+        if (isEditing) {
+            const confirmed = window.confirm("You have unsaved changes. Leave without saving?");
+            if (!confirmed) return;
+            setIsEditing(false);
+        }
+        router.push(`/${date}`);
+    }
 
     return (
-        <Link href={`/${date}`} className={`${styles.card} ${active ? styles.active : ""}`}>
+        <a
+            href={`/${date}`}
+            onClick={handleClick}
+            className={`${styles.card} ${active ? styles.active : ""}`}
+        >
             <div className={styles.image}>
                 {cover
                     ? <img src={cover} alt="cover" />
@@ -41,6 +59,6 @@ export default function SidebarCard({ date, title, cover, active }: Props) {
                     <span className={styles.year}>{year}</span>
                 </div>
             </div>
-        </Link>
+        </a>
     );
 }
