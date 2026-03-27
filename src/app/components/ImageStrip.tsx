@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "./ImageStrip.module.css";
 import { MediaItem } from "@/lib/media";
+import { useEntryContext } from "../context/EntryContext";
 
 interface Props {
     items: MediaItem[];
@@ -46,9 +47,19 @@ export default function ImageStrip({ items, isEditing, onUpload, onRemove, onAdd
         setDragOver(null);
     }
 
+    const { showModal } = useEntryContext();
+
     function handleAddEmbed() {
-        const url = window.prompt("Paste a URL (YouTube, Medal, Twitter, TikTok):");
-        if (url?.trim()) onAddEmbed?.(url.trim());
+        showModal({
+            type: "prompt",
+            message: "Paste a media URL to embed",
+            placeholder: "YouTube, Medal, Twitter, TikTok...",
+            confirmLabel: "Add",
+            cancelLabel: "Cancel",
+            onConfirm: (url) => {
+                if (url.trim()) onAddEmbed?.(url.trim());
+            },
+        });
     }
 
     return (

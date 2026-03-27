@@ -23,15 +23,23 @@ function formatDate(dateStr: string) {
 
 export default function SidebarCard({ date, title, cover, active }: Props) {
     const { day, month, number, year } = formatDate(date);
-    const { isEditing, setIsEditing } = useEntryContext();
+    const { isEditing, setIsEditing, showModal } = useEntryContext();
     const router = useRouter();
 
     function handleClick(e: React.MouseEvent) {
         e.preventDefault();
         if (isEditing) {
-            const confirmed = window.confirm("You have unsaved changes. Leave without saving?");
-            if (!confirmed) return;
-            setIsEditing(false);
+            showModal({
+                type: "confirm",
+                message: "You have unsaved changes. Leave without saving?",
+                confirmLabel: "Leave",
+                cancelLabel: "Stay",
+                onConfirm: () => {
+                    setIsEditing(false);
+                    router.push(`/${date}`);
+                },
+            });
+            return;
         }
         router.push(`/${date}`);
     }
