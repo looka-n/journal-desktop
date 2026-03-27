@@ -119,10 +119,20 @@ export default function EntryEditor({ date }: { date: string }) {
                     </div>
                     <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
                 </div>
-                <div className={styles.inset}>
-                    {saved.media.length > 0 && <Carousel items={saved.media} />}
-                    <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
-                </div>
+                {saved.media.length > 0 ? (
+                    <div className={styles.twoCol}>
+                        <div className={styles.colCarousel}>
+                            <Carousel items={saved.media} />
+                        </div>
+                        <div className={styles.colContent}>
+                            <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className={styles.inset}>
+                        <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
+                    </div>
+                )}
             </div>
         );
     }

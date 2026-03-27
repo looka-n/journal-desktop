@@ -153,3 +153,22 @@
   color: var(--text-secondary);
   letter-spacing: 0.02em;
 }
+
+.twoCol {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.colCarousel {
+  flex: 6;
+  min-width: 0;
+}
+
+.colContent {
+  flex: 4;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
