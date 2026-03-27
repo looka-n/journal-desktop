@@ -109,7 +109,14 @@ export default function EntryEditor({ date }: { date: string }) {
         return (
             <div className={styles.entry} key={date}>
                 <div className={styles.readHeader}>
-                    <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
+                    <div className={styles.titleBlock}>
+                        <h1 className={styles.readTitle}>{saved.title || <span className={styles.empty}>No title</span>}</h1>
+                        <span className={styles.dateSubtitle}>
+                            {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
+                                weekday: "long", month: "long", day: "numeric", year: "numeric"
+                            })}
+                        </span>
+                    </div>
                     <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
                 </div>
                 <div className={styles.inset}>
