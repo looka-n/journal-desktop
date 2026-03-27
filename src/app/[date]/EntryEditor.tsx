@@ -138,34 +138,43 @@ export default function EntryEditor({ date }: { date: string }) {
     }
 
     return (
-        <div className={styles.entry} key={`${date}-edit`}>
-            <input
-                className={styles.title}
-                value={draft.title}
-                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
-                placeholder="Title"
-            />
-            <ImageStrip
-                items={draft.media}
-                isEditing
-                onUpload={handleUpload}
-                onRemove={handleRemove}
-                onAddEmbed={handleAddEmbed}
-                onReorder={handleReorder}
-            />
-            {uploading && <p className={styles.empty}>Uploading...</p>}
-            <textarea
-                className={styles.editor}
-                value={draft.content}
-                onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-                placeholder="Write your entry..."
-            />
-            <div className={styles.actions}>
-                <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
-                <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
-                    {saving ? "Saving..." : "Save"}
-                </button>
-            </div>
-        </div>
-    );
+  <div className={styles.entry} key={`${date}-edit`}>
+    <div className={styles.editHeader}>
+      <div className={styles.titleBlock}>
+        <input
+          className={styles.title}
+          value={draft.title}
+          onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+          placeholder="Title"
+        />
+        <span className={styles.dateSubtitle}>
+          {new Date(date + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric", year: "numeric"
+          })}
+        </span>
+      </div>
+    </div>
+    <ImageStrip
+      items={draft.media}
+      isEditing
+      onUpload={handleUpload}
+      onRemove={handleRemove}
+      onAddEmbed={handleAddEmbed}
+      onReorder={handleReorder}
+    />
+    {uploading && <p className={styles.empty}>Uploading...</p>}
+    <textarea
+      className={styles.editor}
+      value={draft.content}
+      onChange={(e) => setDraft({ ...draft, content: e.target.value })}
+      placeholder="Write your entry..."
+    />
+    <div className={styles.actions}>
+      <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
+      <button className={styles.saveBtn} onClick={handleSave} disabled={saving}>
+        {saving ? "Saving..." : "Save"}
+      </button>
+    </div>
+  </div>
+);
 }
