@@ -8,15 +8,6 @@
   overflow: hidden;
   position: relative;
   transition: opacity 150ms ease;
-  opacity: 0.45;
-}
-
-.card:hover {
-  opacity: 0.75;
-}
-
-.active {
-  opacity: 1;
 }
 
 .image {
@@ -24,6 +15,16 @@
   aspect-ratio: 21 / 9;
   overflow: hidden;
   position: relative;
+  opacity: 0.45;
+  transition: opacity 150ms ease;
+}
+
+.card:hover .image {
+  opacity: 0.75;
+}
+
+.active .image {
+  opacity: 1;
 }
 
 .image::after {
