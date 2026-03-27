@@ -93,6 +93,10 @@ export default function EntryEditor({ date }: { date: string }) {
         setSaving(false);
     }
 
+    function handleReorder(reordered: MediaItem[]) {
+        setDraft((prev) => ({ ...prev, media: reordered }));
+    }
+
     if (loading) {
         return (
             <div className={styles.spinnerWrap}>
@@ -130,6 +134,7 @@ export default function EntryEditor({ date }: { date: string }) {
                 onUpload={handleUpload}
                 onRemove={handleRemove}
                 onAddEmbed={handleAddEmbed}
+                onReorder={handleReorder}
             />
             {uploading && <p className={styles.empty}>Uploading...</p>}
             <textarea

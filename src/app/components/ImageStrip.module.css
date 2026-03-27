@@ -10,6 +10,19 @@
   flex-shrink: 0;
   width: 100px;
   height: 100px;
+  cursor: grab;
+  transition: opacity 150ms ease, transform 150ms ease;
+  border-radius: 4px;
+}
+
+.thumb:active {
+  cursor: grabbing;
+  opacity: 0.5;
+}
+
+.dragOver {
+  transform: scale(1.05);
+  outline: 2px solid var(--text-secondary);
 }
 
 .thumb img {
@@ -17,6 +30,7 @@
   height: 100%;
   object-fit: cover;
   border-radius: 4px;
+  pointer-events: none;
 }
 
 .embedThumb {
@@ -29,6 +43,7 @@
   align-items: center;
   justify-content: center;
   font-size: 2rem;
+  pointer-events: none;
 }
 
 .remove {
@@ -86,4 +101,8 @@
 .addLink:hover {
   border-color: var(--text-secondary);
   color: var(--text-secondary);
+}
+
+.dragging {
+  opacity: 0.4;
 }
