@@ -1,0 +1,15 @@
+.monthHeader {
+  padding: 1.25rem 1rem 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+
+.monthHeader:first-child {
+  border-top: none;
+  margin-top: 0;
+}
