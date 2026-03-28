@@ -2,11 +2,14 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import Modal from "../components/Modal";
+import Toast from "../components/Toast";
 
 type ModalConfig =
     | { type: "confirm"; message: string; confirmLabel?: string; cancelLabel?: string; onConfirm: () => void }
     | { type: "prompt"; message: string; placeholder?: string; confirmLabel?: string; cancelLabel?: string; onConfirm: (val: string) => void }
     | null;
+
+type ToastConfig = { message: string; type: "success" | "error" } | null;
 
 interface EntryContextType {
     refreshSidebar: () => void;
@@ -14,6 +17,7 @@ interface EntryContextType {
     isEditing: boolean;
     setIsEditing: (val: boolean) => void;
     showModal: (config: Exclude<ModalConfig, null>) => void;
+    showToast: (message: string, type: "success" | "error") => void;
 }
 
 const EntryContext = createContext<EntryContextType>({
@@ -22,12 +26,14 @@ const EntryContext = createContext<EntryContextType>({
     isEditing: false,
     setIsEditing: () => { },
     showModal: () => { },
+    showToast: () => { },
 });
 
 export function EntryProvider({ children }: { children: ReactNode }) {
     const [refreshTrigger, setRefreshTrigger] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
     const [modal, setModal] = useState<ModalConfig>(null);
+    const [toast, setToast] = useState<ToastConfig>(null);
 
     const refreshSidebar = useCallback(() => {
         setRefreshTrigger((n) => n + 1);
@@ -37,12 +43,16 @@ export function EntryProvider({ children }: { children: ReactNode }) {
         setModal(config);
     }, []);
 
+    const showToast = useCallback((message: string, type: "success" | "error") => {
+        setToast({ message, type });
+    }, []);
+
     function closeModal() {
         setModal(null);
     }
 
     return (
-        <EntryContext.Provider value={{ refreshSidebar, refreshTrigger, isEditing, setIsEditing, showModal }}>
+        <EntryContext.Provider value={{ refreshSidebar, refreshTrigger, isEditing, setIsEditing, showModal, showToast }}>
             {children}
             {modal && (
                 modal.type === "confirm" ? (
@@ -65,6 +75,13 @@ export function EntryProvider({ children }: { children: ReactNode }) {
                         onCancel={closeModal}
                     />
                 )
+            )}
+            {toast && (
+                <Toast
+                    message={toast.message}
+                    type={toast.type}
+                    onDismiss={() => setToast(null)}
+                />
             )}
         </EntryContext.Provider>
     );

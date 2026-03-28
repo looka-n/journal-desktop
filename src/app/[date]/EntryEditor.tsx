@@ -13,7 +13,7 @@ export default function EntryEditor({ date }: { date: string }) {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
-    const { refreshSidebar, isEditing, setIsEditing } = useEntryContext();
+    const { refreshSidebar, isEditing, setIsEditing, showToast } = useEntryContext();
 
     useEffect(() => {
         setLoading(true);
@@ -42,16 +42,20 @@ export default function EntryEditor({ date }: { date: string }) {
 
     async function handleUpload(files: FileList) {
         setUploading(true);
-        const formData = new FormData();
-        Array.from(files).forEach((file) => formData.append("images", file));
-
-        const res = await fetch(`/api/entries/${date}/images`, {
-            method: "POST",
-            body: formData,
-        });
-        const data = await res.json();
-        const newItems: MediaItem[] = data.urls.map((url: string) => ({ type: "image" as const, url }));
-        setDraft((prev) => ({ ...prev, media: [...prev.media, ...newItems] }));
+        try {
+            const formData = new FormData();
+            Array.from(files).forEach((file) => formData.append("images", file));
+            const res = await fetch(`/api/entries/${date}/images`, {
+                method: "POST",
+                body: formData,
+            });
+            const data = await res.json();
+            const newItems: MediaItem[] = data.urls.map((url: string) => ({ type: "image" as const, url }));
+            setDraft((prev) => ({ ...prev, media: [...prev.media, ...newItems] }));
+        } catch (err) {
+            console.error("Upload error:", err);
+            showToast("Failed to upload image", "error");
+        }
         setUploading(false);
     }
 
@@ -63,17 +67,22 @@ export default function EntryEditor({ date }: { date: string }) {
 
     async function handleRemove(index: number) {
         const item = draft.media[index];
-        if (item.type === "image") {
-            await fetch(`/api/entries/${date}/images`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ url: item.url }),
-            });
+        try {
+            if (item.type === "image") {
+                await fetch(`/api/entries/${date}/images`, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: item.url }),
+                });
+            }
+            setDraft((prev) => ({
+                ...prev,
+                media: prev.media.filter((_, i) => i !== index),
+            }));
+        } catch (err) {
+            console.error("Delete error:", err);
+            showToast("Failed to remove image", "error");
         }
-        setDraft((prev) => ({
-            ...prev,
-            media: prev.media.filter((_, i) => i !== index),
-        }));
     }
 
     async function handleSave() {
@@ -87,8 +96,10 @@ export default function EntryEditor({ date }: { date: string }) {
             setSaved(draft);
             setIsEditing(false);
             refreshSidebar();
+            showToast("Entry saved", "success");
         } catch (err) {
             console.error("Save error:", err);
+            showToast("Failed to save entry", "error");
         }
         setSaving(false);
     }
