@@ -11,6 +11,18 @@
   position: relative;
   opacity: 0.5;
   transition: opacity 150ms ease;
+  animation: cellIn 300ms ease both;
+}
+
+@keyframes cellIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
 }
 
 .cell:hover {

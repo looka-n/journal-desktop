@@ -40,7 +40,7 @@ export default function GridView({ dates, entryMeta, pathname, bottomRef }: Prop
 
     return (
         <div className={styles.grid}>
-            {dates.map((date) => {
+            {dates.map((date, index) => {
                 const cover = entryMeta[date]?.cover ?? null;
                 const active = pathname === `/${date}`;
                 return (
@@ -49,6 +49,7 @@ export default function GridView({ dates, entryMeta, pathname, bottomRef }: Prop
                         href={`/${date}`}
                         onClick={(e) => handleClick(e, date)}
                         className={`${styles.cell} ${active ? styles.active : ""}`}
+                        style={{ animationDelay: `${index * 30}ms` }}
                     >
                         {cover
                             ? <img src={cover} alt={date} className={styles.image} />

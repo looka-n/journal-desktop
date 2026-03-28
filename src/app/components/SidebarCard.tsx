@@ -9,6 +9,7 @@ interface Props {
     title: string;
     cover: string | null;
     active: boolean;
+    index: number;
 }
 
 function formatDate(dateStr: string) {
@@ -21,7 +22,7 @@ function formatDate(dateStr: string) {
     };
 }
 
-export default function SidebarCard({ date, title, cover, active }: Props) {
+export default function SidebarCard({ date, title, cover, active, index }: Props) {
     const { day, month, number, year } = formatDate(date);
     const { isEditing, setIsEditing, showModal } = useEntryContext();
     const router = useRouter();
@@ -49,6 +50,7 @@ export default function SidebarCard({ date, title, cover, active }: Props) {
             href={`/${date}`}
             onClick={handleClick}
             className={`${styles.card} ${active ? styles.active : ""}`}
+            style={{ animationDelay: `${index * 40}ms` }}
         >
             <div className={styles.image}>
                 {cover

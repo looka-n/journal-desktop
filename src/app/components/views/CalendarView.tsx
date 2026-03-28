@@ -72,8 +72,12 @@ export default function CalendarView({ entryMeta, pathname }: Props) {
 
     return (
         <div className={styles.calendar}>
-            {months.map(({ year, month }) => (
-                <div key={`${year}-${month}`} className={styles.month}>
+            {months.map(({ year, month }, index) => (
+                <div
+                    key={`${year}-${month}`}
+                    className={styles.month}
+                    style={{ animationDelay: `${index * 60}ms` }}
+                >
                     <div className={styles.monthHeader}>
                         {MONTH_NAMES[month]} {year}
                     </div>

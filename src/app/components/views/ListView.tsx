@@ -15,13 +15,14 @@ interface Props {
 export default function ListView({ dates, entryMeta, pathname, bottomRef }: Props) {
     return (
         <>
-            {dates.map((date) => (
+            {dates.map((date, index) => (
                 <SidebarCard
                     key={date}
                     date={date}
                     title={entryMeta[date]?.title ?? ""}
                     cover={entryMeta[date]?.cover ?? null}
                     active={pathname === `/${date}`}
+                    index={index}
                 />
             ))}
             <div ref={bottomRef} />

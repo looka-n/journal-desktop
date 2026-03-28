@@ -9,6 +9,18 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  animation: monthIn 300ms ease both;
+}
+
+@keyframes monthIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .monthHeader {
