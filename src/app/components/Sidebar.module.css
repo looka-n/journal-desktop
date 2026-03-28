@@ -12,7 +12,7 @@
   top: 0;
   z-index: 10;
   background: var(--surface);
-  padding: 0.75rem 0.5rem;
+  padding: 0.75rem 0.5rem 0.4rem;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -51,4 +51,86 @@
 
 .clear:hover {
   color: var(--text-primary);
+}
+
+.viewWrap {
+  position: sticky;
+  top: 49px;
+  z-index: 10;
+  background: var(--surface);
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.viewTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.viewTrigger:hover {
+  border-color: var(--text-secondary);
+}
+
+.viewIcon {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+}
+
+.chevron {
+  margin-left: auto;
+  color: var(--text-muted);
+  transition: transform 150ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0.5rem;
+  right: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+}
+
+.dropdownItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.dropdownItem:hover {
+  background: var(--bg);
+}
+
+.dropdownItemActive {
+  color: var(--text-primary);
+  font-weight: 600;
 }
