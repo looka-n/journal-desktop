@@ -1,3 +1,18 @@
+.group {
+  margin-bottom: 0.5rem;
+}
+
+.monthHeader {
+  padding: 1.25rem 1rem 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border);
+  margin-top: 0.5rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
