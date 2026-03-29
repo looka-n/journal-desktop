@@ -13,6 +13,7 @@ export default function EntryEditor({ date }: { date: string }) {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [favorite, setFavorite] = useState(false);
     const { refreshSidebar, isEditing, setIsEditing, showToast } = useEntryContext();
 
     useEffect(() => {
@@ -22,9 +23,10 @@ export default function EntryEditor({ date }: { date: string }) {
             const res = await fetch(`/api/entries/${date}`);
             const data = await res.json();
             const media = normalizeMedia(data.images ?? []);
-            const entry = { title: data.title, content: data.content, media };
+            const entry = { title: data.title, content: data.content, media, favorite: data.favorite ?? false };
             setSaved(entry);
             setDraft(entry);
+            setFavorite(data.favorite ?? false);
             setLoading(false);
         }
         loadEntry();
@@ -108,6 +110,23 @@ export default function EntryEditor({ date }: { date: string }) {
         setDraft((prev) => ({ ...prev, media: reordered }));
     }
 
+    async function handleFavorite() {
+        const newVal = !favorite;
+        setFavorite(newVal);
+        try {
+            await fetch(`/api/entries/${date}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ favorite: newVal }),
+            });
+            refreshSidebar();
+        } catch (err) {
+            console.error("Favorite error:", err);
+            setFavorite(!newVal);
+            showToast("Failed to update favorite", "error");
+        }
+    }
+
     if (loading) {
         return (
             <div className={styles.spinnerWrap}>
@@ -128,7 +147,24 @@ export default function EntryEditor({ date }: { date: string }) {
                             })}
                         </span>
                     </div>
-                    <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
+                    <div className={styles.headerActions}>
+                        <button
+                            className={`${styles.favoriteBtn} ${favorite ? styles.favoriteBtnActive : ""}`}
+                            onClick={handleFavorite}
+                            title={favorite ? "Unfavorite" : "Favorite"}
+                        >
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path
+                                    d="M9 1.5L11.09 6.26L16.18 6.77L12.54 10.14L13.64 15.18L9 12.51L4.36 15.18L5.46 10.14L1.82 6.77L6.91 6.26L9 1.5Z"
+                                    stroke="currentColor"
+                                    strokeWidth="1.5"
+                                    strokeLinejoin="round"
+                                    fill={favorite ? "currentColor" : "none"}
+                                />
+                            </svg>
+                        </button>
+                        <button className={styles.editBtn} onClick={handleEdit}>Edit</button>
+                    </div>
                 </div>
                 {saved.media.length > 0 ? (
                     <div className={styles.twoCol}>

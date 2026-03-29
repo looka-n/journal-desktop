@@ -194,3 +194,33 @@
 .editBtn:hover {
   border-color: var(--text-secondary);
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.favoriteBtn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.35rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.favoriteBtn:hover {
+  color: #f0c040;
+  border-color: #f0c040;
+}
+
+.favoriteBtnActive {
+  color: #f0c040;
+  border-color: #f0c040;
+}

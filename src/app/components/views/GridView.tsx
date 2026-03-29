@@ -55,6 +55,11 @@ export default function GridView({ dates, entryMeta, pathname, bottomRef }: Prop
                             ? <img src={cover} alt={date} className={styles.image} />
                             : <div className={styles.empty} />
                         }
+                        {entryMeta[date]?.favorite && (
+                            <svg className={styles.star} width="10" height="10" viewBox="0 0 18 18" fill="currentColor">
+                                <path d="M9 1.5L11.09 6.26L16.18 6.77L12.54 10.14L13.64 15.18L9 12.51L4.36 15.18L5.46 10.14L1.82 6.77L6.91 6.26L9 1.5Z" />
+                            </svg>
+                        )}
                     </a>
                 );
             })}

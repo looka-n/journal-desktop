@@ -10,6 +10,7 @@ interface Props {
     cover: string | null;
     active: boolean;
     index: number;
+    favorite: boolean;
 }
 
 function formatDate(dateStr: string) {
@@ -22,7 +23,7 @@ function formatDate(dateStr: string) {
     };
 }
 
-export default function SidebarCard({ date, title, cover, active, index }: Props) {
+export default function SidebarCard({ date, title, cover, active, index, favorite }: Props) {
     const { day, month, number, year } = formatDate(date);
     const { isEditing, setIsEditing, showModal } = useEntryContext();
     const router = useRouter();
@@ -63,10 +64,17 @@ export default function SidebarCard({ date, title, cover, active, index }: Props
                     <span className={styles.day}>{day}</span>
                     {title && <span className={styles.title}>{title}</span>}
                 </div>
-                <div className={styles.dateStack}>
-                    <span className={styles.month}>{month}</span>
-                    <span className={styles.number}>{number}</span>
-                    <span className={styles.year}>{year}</span>
+                <div className={styles.right}>
+                    {favorite && (
+                        <svg className={styles.star} width="12" height="12" viewBox="0 0 18 18" fill="currentColor">
+                            <path d="M9 1.5L11.09 6.26L16.18 6.77L12.54 10.14L13.64 15.18L9 12.51L4.36 15.18L5.46 10.14L1.82 6.77L6.91 6.26L9 1.5Z" />
+                        </svg>
+                    )}
+                    <div className={styles.dateStack}>
+                        <span className={styles.month}>{month}</span>
+                        <span className={styles.number}>{number}</span>
+                        <span className={styles.year}>{year}</span>
+                    </div>
                 </div>
             </div>
         </a>

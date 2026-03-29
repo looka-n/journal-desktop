@@ -62,8 +62,13 @@
   border-bottom: 1px solid var(--border);
 }
 
+.viewControls {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
 .viewTrigger {
-  width: 100%;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -80,6 +85,10 @@
 
 .viewTrigger:hover {
   border-color: var(--text-secondary);
+}
+
+.viewTriggerFlex {
+  flex: 1;
 }
 
 .viewIcon {
@@ -133,4 +142,28 @@
 .dropdownItemActive {
   color: var(--text-primary);
   font-weight: 600;
+}
+
+.favoriteFilter {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.favoriteFilter:hover {
+  color: #f0c040;
+  border-color: #f0c040;
+}
+
+.favoriteFilterActive {
+  color: #f0c040;
+  border-color: #f0c040;
 }

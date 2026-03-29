@@ -17,6 +17,7 @@ export async function GET() {
             date: item.date as string,
             title: item.title as string ?? "",
             cover,
+            favorite: item.favorite ?? false,
         };
     });
 

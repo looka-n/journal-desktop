@@ -97,3 +97,14 @@
 .empty {
   aspect-ratio: 1;
 }
+
+.starDot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f0c040;
+  flex-shrink: 0;
+}

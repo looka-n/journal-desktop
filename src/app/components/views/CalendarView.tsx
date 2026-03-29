@@ -104,6 +104,7 @@ export default function CalendarView({ entryMeta, pathname }: Props) {
                                         ? <img src={cover} alt={date} className={styles.cover} />
                                         : <span className={styles.dayNumber}>{new Date(date + "T00:00:00").getDate()}</span>
                                     }
+                                    {entryMeta[date]?.favorite && <span className={styles.starDot} />}
                                 </a>
                             );
                         })}

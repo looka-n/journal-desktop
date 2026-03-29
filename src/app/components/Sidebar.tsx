@@ -13,7 +13,7 @@ type View = "list" | "grid" | "calendar";
 
 function ListIcon() {
     return (
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
             <rect x="1" y="2" width="13" height="2" rx="1" fill="currentColor" />
             <rect x="1" y="6.5" width="13" height="2" rx="1" fill="currentColor" />
             <rect x="1" y="11" width="13" height="2" rx="1" fill="currentColor" />
@@ -23,7 +23,7 @@ function ListIcon() {
 
 function GridIcon() {
     return (
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
             <rect x="1" y="1" width="5.5" height="5.5" rx="1" fill="currentColor" />
             <rect x="8.5" y="1" width="5.5" height="5.5" rx="1" fill="currentColor" />
             <rect x="1" y="8.5" width="5.5" height="5.5" rx="1" fill="currentColor" />
@@ -34,7 +34,7 @@ function GridIcon() {
 
 function CalendarIcon() {
     return (
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
             <rect x="1" y="2" width="13" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
             <line x1="1" y1="6" x2="14" y2="6" stroke="currentColor" strokeWidth="1.5" />
             <line x1="5" y1="1" x2="5" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -81,6 +81,7 @@ function generateFilteredDates(query: string): string[] {
 interface EntryMeta {
     title: string;
     cover: string | null;
+    favorite: boolean;
 }
 
 export default function Sidebar() {
@@ -89,6 +90,7 @@ export default function Sidebar() {
     const [query, setQuery] = useState("");
     const [view, setView] = useState<View>("list");
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [favoritesOnly, setFavoritesOnly] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
@@ -100,7 +102,11 @@ export default function Sidebar() {
             const data = await res.json();
             const meta: Record<string, EntryMeta> = {};
             for (const entry of data.entries) {
-                meta[entry.date] = { title: entry.title, cover: entry.cover };
+                meta[entry.date] = {
+                    title: entry.title,
+                    cover: entry.cover,
+                    favorite: entry.favorite ?? false,
+                };
             }
             setEntryMeta(meta);
         }
@@ -143,6 +149,10 @@ export default function Sidebar() {
         })
         : dates;
 
+    const visibleDates = favoritesOnly
+        ? filteredDates.filter((date) => entryMeta[date]?.favorite)
+        : filteredDates;
+
     const activeView = VIEW_OPTIONS.find((v) => v.value === view)!;
 
     return (
@@ -161,16 +171,33 @@ export default function Sidebar() {
             </div>
 
             <div className={styles.viewWrap} ref={dropdownRef}>
-                <button
-                    className={styles.viewTrigger}
-                    onClick={() => setDropdownOpen((o) => !o)}
-                >
-                    <span className={styles.viewIcon}>{activeView.icon}</span>
-                    <span>{activeView.label}</span>
-                    <svg className={`${styles.chevron} ${dropdownOpen ? styles.chevronOpen : ""}`} width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </button>
+                <div className={styles.viewControls}>
+                    <button
+                        className={`${styles.viewTrigger} ${styles.viewTriggerFlex}`}
+                        onClick={() => setDropdownOpen((o) => !o)}
+                    >
+                        <span className={styles.viewIcon}>{activeView.icon}</span>
+                        <span>{activeView.label}</span>
+                        <svg className={`${styles.chevron} ${dropdownOpen ? styles.chevronOpen : ""}`} width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+                    <button
+                        className={`${styles.favoriteFilter} ${favoritesOnly ? styles.favoriteFilterActive : ""}`}
+                        onClick={() => setFavoritesOnly((f) => !f)}
+                        title="Show favorites only"
+                    >
+                        <svg width="15" height="15" viewBox="0 0 18 18" fill="none">
+                            <path
+                                d="M9 1.5L11.09 6.26L16.18 6.77L12.54 10.14L13.64 15.18L9 12.51L4.36 15.18L5.46 10.14L1.82 6.77L6.91 6.26L9 1.5Z"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinejoin="round"
+                                fill={favoritesOnly ? "currentColor" : "none"}
+                            />
+                        </svg>
+                    </button>
+                </div>
                 {dropdownOpen && (
                     <div className={styles.dropdown}>
                         {VIEW_OPTIONS.map((option) => (
@@ -189,7 +216,7 @@ export default function Sidebar() {
 
             {view === "list" && (
                 <ListView
-                    dates={filteredDates}
+                    dates={visibleDates}
                     entryMeta={entryMeta}
                     pathname={pathname}
                     bottomRef={bottomRef}
@@ -197,7 +224,7 @@ export default function Sidebar() {
             )}
             {view === "grid" && (
                 <GridView
-                    dates={filteredDates}
+                    dates={visibleDates}
                     entryMeta={entryMeta}
                     pathname={pathname}
                     bottomRef={bottomRef}

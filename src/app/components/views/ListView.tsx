@@ -23,6 +23,7 @@ export default function ListView({ dates, entryMeta, pathname, bottomRef }: Prop
                     cover={entryMeta[date]?.cover ?? null}
                     active={pathname === `/${date}`}
                     index={index}
+                    favorite={entryMeta[date]?.favorite ?? false}
                 />
             ))}
             <div ref={bottomRef} />
