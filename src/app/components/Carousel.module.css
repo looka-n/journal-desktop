@@ -74,6 +74,11 @@
 .arrowLeft  { left: 0.75rem; }
 .arrowRight { right: 0.75rem; }
 
+.arrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
 .dots {
   position: absolute;
   bottom: 0.75rem;
@@ -175,3 +180,8 @@
 
 .lightboxLeft  { left: 1.25rem; }
 .lightboxRight { right: 1.25rem; }
+
+.lightboxArrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}

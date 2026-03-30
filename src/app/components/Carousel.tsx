@@ -31,12 +31,15 @@ export default function Carousel({ items }: Props) {
         }, 350);
     }
 
+
     const prevSlide = useCallback(() => {
-        navigate((current - 1 + items.length) % items.length, "left");
-    }, [current, items.length, animating]);
+        if (current === 0) return;
+        navigate(current - 1, "left");
+    }, [current, animating]);
 
     const nextSlide = useCallback(() => {
-        navigate((current + 1) % items.length, "right");
+        if (current === items.length - 1) return;
+        navigate(current + 1, "right");
     }, [current, items.length, animating]);
 
     useEffect(() => {
@@ -84,8 +87,16 @@ export default function Carousel({ items }: Props) {
                 )}
                 {items.length > 1 && (
                     <>
-                        <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={prevSlide}>‹</button>
-                        <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={nextSlide}>›</button>
+                        <button
+                            className={`${styles.arrow} ${styles.arrowLeft}`}
+                            onClick={prevSlide}
+                            disabled={current === 0}
+                        >‹</button>
+                        <button
+                            className={`${styles.arrow} ${styles.arrowRight}`}
+                            onClick={nextSlide}
+                            disabled={current === items.length - 1}
+                        >›</button>
                         <div className={styles.dots}>
                             {items.map((_, i) => (
                                 <button
@@ -106,8 +117,16 @@ export default function Carousel({ items }: Props) {
                         <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
                         {items.length > 1 && (
                             <>
-                                <button className={`${styles.lightboxArrow} ${styles.lightboxLeft}`} onClick={prevSlide}>‹</button>
-                                <button className={`${styles.lightboxArrow} ${styles.lightboxRight}`} onClick={nextSlide}>›</button>
+                                <button
+                                    className={`${styles.lightboxArrow} ${styles.lightboxLeft}`}
+                                    onClick={prevSlide}
+                                    disabled={current === 0}
+                                >‹</button>
+                                <button
+                                    className={`${styles.lightboxArrow} ${styles.lightboxRight}`}
+                                    onClick={nextSlide}
+                                    disabled={current === items.length - 1}
+                                >›</button>
                             </>
                         )}
                     </div>
