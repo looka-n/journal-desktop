@@ -88,9 +88,77 @@
 .readContent {
   font-size: 1.05rem;
   line-height: 2;
-  white-space: pre-wrap;
   color: var(--text-primary);
   max-width: 680px;
+}
+
+.readContent p {
+  margin-bottom: 0.75rem;
+}
+
+.readContent h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.readContent h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.readContent h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.readContent strong {
+  font-weight: 700;
+}
+
+.readContent em {
+  font-style: italic;
+}
+
+.readContent ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  list-style: disc;
+}
+
+.readContent ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  list-style: decimal;
+}
+
+.readContent li {
+  margin-bottom: 0.25rem;
+  line-height: 1.8;
+}
+
+.readContent a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+.readContent blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.readContent code {
+  background: var(--border);
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: monospace;
 }
 
 .editor {

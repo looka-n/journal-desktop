@@ -1,0 +1,105 @@
+.wrap {
+  flex: 1;
+  overflow-y: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+}
+
+.editor {
+  outline: none;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: var(--text-primary);
+  font-family: inherit;
+  min-height: 200px;
+  caret-color: var(--text-primary);
+}
+
+.editor p {
+  margin-bottom: 0.75rem;
+}
+
+.editor p:last-child {
+  margin-bottom: 0;
+}
+
+.editor h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.editor h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  line-height: 1.3;
+}
+
+.editor h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.editor strong {
+  font-weight: 700;
+}
+
+.editor em {
+  font-style: italic;
+}
+
+.editor ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  list-style: disc;
+}
+
+.editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  list-style: decimal;
+}
+
+.editor li {
+  margin-bottom: 0.25rem;
+  line-height: 1.8;
+}
+
+.editor a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+
+.editor blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.editor code {
+  background: var(--border);
+  padding: 0.15rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-family: monospace;
+}
+
+.editor hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+/* placeholder */
+.editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}

@@ -6,6 +6,7 @@ import Carousel from "../components/Carousel";
 import ImageStrip from "../components/ImageStrip";
 import { useEntryContext } from "../context/EntryContext";
 import { MediaItem, normalizeMedia, detectPlatform } from "@/lib/media";
+import Editor from "../components/Editor";
 
 export default function EntryEditor({ date }: { date: string }) {
     const [saved, setSaved] = useState({ title: "", content: "", media: [] as MediaItem[] });
@@ -172,7 +173,10 @@ export default function EntryEditor({ date }: { date: string }) {
                             <Carousel items={saved.media} />
                         </div>
                         <div className={styles.colContent}>
-                            <p className={styles.readContent}>{saved.content || <span className={styles.empty}>No content yet.</span>}</p>
+                            <div
+                                className={styles.readContent}
+                                dangerouslySetInnerHTML={{ __html: saved.content || "<p></p>" }}
+                            />
                         </div>
                     </div>
                 ) : (
@@ -210,11 +214,9 @@ export default function EntryEditor({ date }: { date: string }) {
                 onReorder={handleReorder}
             />
             {uploading && <p className={styles.empty}>Uploading...</p>}
-            <textarea
-                className={styles.editor}
-                value={draft.content}
-                onChange={(e) => setDraft({ ...draft, content: e.target.value })}
-                placeholder="Write your entry..."
+            <Editor
+                content={draft.content}
+                onChange={(html) => setDraft((prev) => ({ ...prev, content: html }))}
             />
             <div className={styles.actions}>
                 <button className={styles.cancelBtn} onClick={handleCancel}>Cancel</button>
