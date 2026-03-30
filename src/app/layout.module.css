@@ -9,3 +9,45 @@
   overflow-y: auto;
   background: var(--bg);
 }
+
+.overlay {
+  display: none;
+}
+
+.menuBtn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+    width: 100%;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+
+  .menuBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 60;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    color: var(--text-primary);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}

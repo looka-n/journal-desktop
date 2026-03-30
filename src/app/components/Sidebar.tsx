@@ -83,8 +83,12 @@ interface EntryMeta {
     cover: string | null;
     favorite: boolean;
 }
+interface SidebarProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [dates, setDates] = useState<string[]>(() => generateDates(new Date(), BATCH_SIZE));
     const [entryMeta, setEntryMeta] = useState<Record<string, EntryMeta>>({});
     const [query, setQuery] = useState("");
@@ -159,7 +163,7 @@ export default function Sidebar() {
     const activeView = VIEW_OPTIONS.find((v) => v.value === view)!;
 
     return (
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}>
             <div className={styles.searchWrap}>
                 <input
                     className={styles.search}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Sidebar from "./components/Sidebar";
 import { EntryProvider } from "./context/EntryContext";
+import AppShell from "./components/AppShell";
 import styles from "./layout.module.css";
 import "./globals.css";
 
@@ -20,10 +20,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${styles.shell} ${inter.className}`}>
                 <EntryProvider>
-                    <Sidebar />
-                    <main className={styles.main}>
-                        {children}
-                    </main>
+                    <AppShell>{children}</AppShell>
                 </EntryProvider>
             </body>
         </html>
