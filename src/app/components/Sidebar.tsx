@@ -95,6 +95,7 @@ export default function Sidebar() {
     const bottomRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
     const { refreshTrigger } = useEntryContext();
+    const [savedOnly, setSavedOnly] = useState(false);
 
     useEffect(() => {
         async function loadEntryMeta() {
@@ -149,9 +150,11 @@ export default function Sidebar() {
         })
         : dates;
 
-    const visibleDates = favoritesOnly
-        ? filteredDates.filter((date) => entryMeta[date]?.favorite)
-        : filteredDates;
+    const visibleDates = filteredDates.filter((date) => {
+        if (favoritesOnly && !entryMeta[date]?.favorite) return false;
+        if (savedOnly && !entryMeta[date]) return false;
+        return true;
+    });
 
     const activeView = VIEW_OPTIONS.find((v) => v.value === view)!;
 
@@ -180,6 +183,20 @@ export default function Sidebar() {
                         <span>{activeView.label}</span>
                         <svg className={`${styles.chevron} ${dropdownOpen ? styles.chevronOpen : ""}`} width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </button>
+                    <button
+                        className={`${styles.savedFilter} ${savedOnly ? styles.savedFilterActive : ""}`}
+                        onClick={() => setSavedOnly((s) => !s)}
+                        title="Show saved entries only"
+                    >
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                            <path
+                                d="M3 2C3 1.44772 3.44772 1 4 1H11C11.5523 1 12 1.44772 12 2V13.5C12 13.7761 11.7761 14 11.5 14C11.3684 14 11.2425 13.9473 11.1464 13.8536L7.5 10.2071L3.85355 13.8536C3.75742 13.9497 3.63065 14 3.5 14C3.22386 14 3 13.7761 3 13.5V2Z"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                fill={savedOnly ? "currentColor" : "none"}
+                            />
                         </svg>
                     </button>
                     <button
