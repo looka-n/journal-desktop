@@ -168,16 +168,12 @@ export default function EntryEditor({ date }: { date: string }) {
                     </div>
                 </div>
                 {saved.media.length > 0 ? (
-                    <div className={styles.twoCol}>
-                        <div className={styles.colCarousel}>
-                            <Carousel items={saved.media} />
-                        </div>
-                        <div className={styles.colContent}>
-                            <div
-                                className={styles.readContent}
-                                dangerouslySetInnerHTML={{ __html: saved.content || "<p></p>" }}
-                            />
-                        </div>
+                    <div className={styles.inset}>
+                        {saved.media.length > 0 && <Carousel items={saved.media} />}
+                        <div
+                            className={styles.readContent}
+                            dangerouslySetInnerHTML={{ __html: saved.content || "" }}
+                        />
                     </div>
                 ) : (
                     <div className={styles.inset}>

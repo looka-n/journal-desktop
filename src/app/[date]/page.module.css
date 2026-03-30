@@ -185,31 +185,13 @@
   font-weight: normal;
 }
 
-.twoCol {
-  display: flex;
-  flex-direction: row;
-  gap: 1.5rem;
-  flex: 1;
-  min-height: 0;
-}
-
-.colCarousel {
-  flex: 6;
-  min-width: 0;
-}
-
-.colContent {
-  flex: 4;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
 .inset {
   width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 680px;
 }
 
 .actions {
