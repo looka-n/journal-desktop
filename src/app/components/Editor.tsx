@@ -32,7 +32,7 @@ export default function Editor({ content, onChange }: Props) {
     });
     useEffect(() => {
         if (editor && content !== editor.getHTML()) {
-            editor.commands.setContent(content, false, { preserveWhitespace: "full" });
+            editor.commands.setContent(content);
         }
     }, [content]);
 
