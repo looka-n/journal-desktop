@@ -9,12 +9,12 @@ export function normalizeMedia(raw: unknown[]): MediaItem[] {
     });
 }
 
-export function detectPlatform(url: string): MediaItem["platform"] {
-    if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube";
-    if (url.includes("medal.tv")) return "medal";
-    if (url.includes("twitter.com") || url.includes("x.com")) return "twitter";
-    if (url.includes("tiktok.com")) return "tiktok";
-    return "unknown";
+export function detectPlatform(url: string): "youtube" | "medal" | "twitter" | "tiktok" | "unknown" {
+  if (url.includes("youtube.com") || url.includes("youtu.be")) return "youtube";
+  if (url.includes("medal.tv")) return "medal";
+  if (url.includes("twitter.com") || url.includes("x.com")) return "twitter";
+  if (url.includes("tiktok.com")) return "tiktok";
+  return "unknown";
 }
 
 export function getEmbedUrl(item: Extract<MediaItem, { type: "embed" }>): string | null {

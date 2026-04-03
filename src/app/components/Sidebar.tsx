@@ -96,7 +96,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [favoritesOnly, setFavoritesOnly] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const bottomRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null!);
     const pathname = usePathname();
     const { refreshTrigger } = useEntryContext();
     const [savedOnly, setSavedOnly] = useState(false);

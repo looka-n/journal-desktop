@@ -11,7 +11,7 @@ interface Props {
     dates: string[];
     entryMeta: Record<string, EntryMeta>;
     pathname: string;
-    bottomRef: React.RefObject<HTMLDivElement>;
+    bottomRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function getMonthLabel(dateStr: string): string {

@@ -8,6 +8,7 @@ import styles from "./CalendarView.module.css";
 interface EntryMeta {
     title: string;
     cover: string | null;
+    favorite: boolean;
 }
 
 interface Props {
